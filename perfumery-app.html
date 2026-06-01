@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Formulair – DIY Perfumery Studio</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['Cormorant Garamond', 'Georgia', 'serif'],
+        body: ['DM Sans', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      }
+    }
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+* { box-sizing: border-box; }
+body { font-family: 'DM Sans', system-ui, sans-serif; background: #020617; color: #f1f5f9; }
+.font-display { font-family: 'Cormorant Garamond', Georgia, serif; }
+.font-mono-custom { font-family: 'JetBrains Mono', monospace; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+.glass { background: rgba(15,23,42,0.75); backdrop-filter: blur(12px); border: 1px solid rgba(51,65,85,0.5); }
+.glass-light { background: rgba(30,41,59,0.6); backdrop-filter: blur(8px); border: 1px solid rgba(71,85,105,0.4); }
+
+.tab-active { color: #10b981; border-bottom: 2px solid #10b981; }
+.tab-inactive { color: #94a3b8; border-bottom: 2px solid transparent; }
+.tab-inactive:hover { color: #cbd5e1; border-bottom: 2px solid #475569; }
+
+input[type="text"], input[type="number"], select, textarea {
+  background: rgba(15,23,42,0.85);
+  border: 1px solid rgba(51,65,85,0.7);
+  color: #f1f5f9;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16,185,129,0.15);
+}
+input::placeholder { color: #475569; }
+select option { background: #0f172a; color: #f1f5f9; }
+
+.btn-primary {
+  background: #10b981; color: #020617;
+  border: none; border-radius: 6px;
+  padding: 8px 16px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 600; font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  display: inline-flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.btn-primary:hover { background: #059669; }
+.btn-primary:active { transform: scale(0.97); }
+
+.btn-secondary {
+  background: rgba(30,41,59,0.8); color: #94a3b8;
+  border: 1px solid rgba(51,65,85,0.6);
+  border-radius: 6px; padding: 8px 14px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 500; font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  display: inline-flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.btn-secondary:hover { background: rgba(51,65,85,0.7); color: #f1f5f9; }
+
+.btn-danger {
+  background: rgba(239,68,68,0.12); color: #f87171;
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 6px; padding: 6px 12px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 500; font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.btn-danger:hover { background: rgba(239,68,68,0.22); }
+
+.recipe-row:hover td { background: rgba(30,41,59,0.35); }
+
+.balance-perfect { color: #10b981; }
+.balance-over { color: #f87171; }
+.balance-under { color: #fbbf24; }
+
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(2,6,23,0.88);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.modal-box {
+  background: #0f172a;
+  border: 1px solid rgba(51,65,85,0.7);
+  border-radius: 12px;
+  width: 100%; max-width: 520px;
+  max-height: 92vh; overflow-y: auto;
+  padding: 24px;
+}
+
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: #0f172a;
+  border: 1px solid #10b981;
+  border-radius: 8px;
+  padding: 12px 18px;
+  color: #d1fae5;
+  font-size: 13px; font-weight: 500;
+  z-index: 100;
+  animation: slideIn 0.2s ease;
+  pointer-events: none;
+}
+.toast-error { border-color: #f87171; color: #fecaca; }
+@keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.section-header {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+.number-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #6ee7b7;
+}
+
+.grid-bg {
+  background-image: linear-gradient(rgba(16,185,129,0.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(16,185,129,0.025) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+table { border-collapse: collapse; width: 100%; }
+th {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: #64748b; padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(51,65,85,0.5);
+  white-space: nowrap;
+  background: rgba(15,23,42,0.5);
+}
+td { padding: 7px 10px; border-bottom: 1px solid rgba(30,41,59,0.9); vertical-align: middle; }
+
+.label { font-size: 11px; font-weight: 500; color: #94a3b8; margin-bottom: 5px; display: block; }
+
+.note-tag {
+  font-size: 10px; padding: 2px 7px; border-radius: 10px;
+  background: rgba(16,185,129,0.1); color: #6ee7b7;
+  border: 1px solid rgba(16,185,129,0.2);
+}
+
+.category-pill {
+  display: inline-block; padding: 2px 8px; border-radius: 20px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+}
+
+.empty-state { text-align: center; padding: 48px 24px; color: #475569; }
+
+@media (max-width: 640px) {
+  .modal-box { padding: 16px; }
+  .hide-mobile { display: none !important; }
+}
+@media (max-width: 768px) {
+  .hide-tablet { display: none !important; }
+}
+</style>
+</head>
+<body class="dark grid-bg min-h-screen">
+
+<div id="app"></div>
+<div id="toast-container" style="position:fixed;bottom:24px;right:24px;z-index:200;display:flex;flex-direction:column;gap:8px;align-items:flex-end;pointer-events:none"></div>
+<div id="modal-container"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// STATE & STORAGE
+// ═══════════════════════════════════════════════════════════════════════════════
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function loadState() {
+  try {
+    return {
+      materials: JSON.parse(localStorage.getItem('pfm_materials') || 'null') || [],
+      formulas:  JSON.parse(localStorage.getItem('pfm_formulas')  || 'null') || [],
+    };
+  } catch(e) { return { materials: [], formulas: [] }; }
+}
+
+function saveState() {
+  localStorage.setItem('pfm_materials', JSON.stringify(state.materials));
+  localStorage.setItem('pfm_formulas',  JSON.stringify(state.formulas));
+}
+
+let state = loadState();
+
+// ─── Seed demo data ───────────────────────────────────────────────────────────
+if (state.materials.length === 0) {
+  const SEED_MATERIALS = [
+    { name:'Ambroxan',               type:'Synthetic Molecule',    description:'Ambergris, woody, skin, radiant',     costPerGram:2.50, stock:50,   dilution:10,  notes:'Amber, Musky',        pyramid:'Base'   },
+    { name:'Benzoin Resinoid, Siam', type:'Natural Resinoid',      description:'Sweet, vanilla, balsamic, resinous',  costPerGram:0.80, stock:100,  dilution:10,  notes:'Sweet, Amber',        pyramid:'Base'   },
+    { name:'Labdanum Abs.',          type:'Natural Absolute',      description:'Sweet, balsamic, amber, tobacco',     costPerGram:1.40, stock:200,  dilution:100, notes:'Amber, Sweet',        pyramid:'Base'   },
+    { name:'Vanillin',               type:'Synthetic Molecule',    description:'Vanilla, sweet, creamy, warm',        costPerGram:0.30, stock:300,  dilution:10,  notes:'Sweet, Vanilla',      pyramid:'Base'   },
+    { name:'Bergamot BF',            type:'Natural Essential Oil', description:'Citrus, fresh, floral, earl grey',    costPerGram:0.60, stock:150,  dilution:100, notes:'Citrus, Fresh',       pyramid:'Top'    },
+    { name:'Lavender EO',            type:'Natural Essential Oil', description:'Floral, herbal, clean, fresh',        costPerGram:0.40, stock:200,  dilution:100, notes:'Floral, Herbal',      pyramid:'Middle' },
+    { name:'Patchouli EO',           type:'Natural Essential Oil', description:'Earthy, woody, dark, sweet',          costPerGram:0.70, stock:120,  dilution:100, notes:'Woody, Earthy',       pyramid:'Base'   },
+    { name:'Hedione',                type:'Synthetic Molecule',    description:'Jasmine, light, diffusive, fresh',    costPerGram:0.50, stock:250,  dilution:100, notes:'Floral, Jasmine',     pyramid:'Middle' },
+    { name:'ISO E Super',            type:'Synthetic Molecule',    description:'Woody, cedar, smoky, velvety',        costPerGram:0.45, stock:300,  dilution:100, notes:'Woody, Aromatic',     pyramid:'Base'   },
+    { name:'Exaltolide',             type:'Synthetic Molecule',    description:'Musk, clean, soft, powdery',          costPerGram:1.20, stock:80,   dilution:100, notes:'Musk, Clean',         pyramid:'Base'   },
+    { name:'Rose Givco 217',         type:'Synthetic Accord',      description:'Rose, fresh, dewy, natural',          costPerGram:0.90, stock:100,  dilution:10,  notes:'Floral, Rose',        pyramid:'Middle' },
+    { name:'Vetiver EO',             type:'Natural Essential Oil', description:'Smoky, earthy, dry, woody',           costPerGram:1.10, stock:60,   dilution:100, notes:'Woody, Earthy',       pyramid:'Base'   },
+    { name:'β-ionone',              type:'Synthetic Molecule',    description:'Violet, woody, raspberry, floral',    costPerGram:0.85, stock:90,   dilution:100, notes:'Violet, Floral',      pyramid:'Middle' },
+    { name:'Cedarwood EO, Virginian',type:'Natural Essential Oil', description:'Dry, woody, pencil shavings, clean', costPerGram:0.35, stock:200,  dilution:100, notes:'Woody, Cedar',        pyramid:'Base'   },
+    { name:'Cis-3-hexenol',          type:'Synthetic Molecule',    description:'Fresh cut grass, green, natural',     costPerGram:1.50, stock:40,   dilution:1,   notes:'Green, Fresh',        pyramid:'Top'    },
+    { name:'Ethylene Brassylate',    type:'Synthetic Molecule',    description:'Musk, sweet, fruity, radiant',        costPerGram:0.60, stock:180,  dilution:100, notes:'Musk, Sweet',         pyramid:'Base'   },
+    { name:'Ethyl Maltol',           type:'Synthetic Molecule',    description:'Cotton candy, sweet, caramel, fruity',costPerGram:0.40, stock:150,  dilution:10,  notes:'Sweet, Fruity',       pyramid:'Middle' },
+    { name:'Fructone',               type:'Synthetic Molecule',    description:'Apple, fruity, fresh, sweet',         costPerGram:0.55, stock:80,   dilution:100, notes:'Fruity, Fresh',       pyramid:'Top'    },
+    { name:'Perfumer\'s Alcohol',    type:'Solvent',               description:'Perfumer\'s grade ethanol 96%',       costPerGram:0.05, stock:5000, dilution:100, notes:'Solvent',             pyramid:'Solvent'},
+    { name:'DPG (Dipropylene Glycol)',type:'Solvent',              description:'Odorless carrier and diluent',        costPerGram:0.04, stock:2000, dilution:100, notes:'Solvent',             pyramid:'Solvent'},
+  ];
+  state.materials = SEED_MATERIALS.map(m => ({ ...m, id: genId() }));
+  saveState();
+}
+
+if (state.formulas.length === 0) {
+  const fid1 = genId();
+  const fid2 = genId();
+  state.formulas = [
+    {
+      id: fid1,
+      name: 'Woody Floral Perfume Idea',
+      category: 'Ideas',
+      notes: "An idea for a formula – it's quite complicated however so I might try splitting it up into separate accords first, balancing those out and then consider making this later.",
+      targetBatchWeight: 10,
+      targetConcentration: 20,
+      rows: [
+        { id:genId(), materialName:'Bergamot BF',           dilution:100, purePct:15.22 },
+        { id:genId(), materialName:'Cedarwood EO, Virginian',dilution:100, purePct:10.08 },
+        { id:genId(), materialName:'Cis-3-hexenol',          dilution:1,   purePct:0.04  },
+        { id:genId(), materialName:'Exaltolide',             dilution:100, purePct:15.22 },
+        { id:genId(), materialName:'Hedione',                dilution:100, purePct:19.02 },
+        { id:genId(), materialName:'ISO E Super',            dilution:100, purePct:19.02 },
+        { id:genId(), materialName:'Labdanum Abs.',          dilution:100, purePct:3.80  },
+        { id:genId(), materialName:'Lavender EO',            dilution:100, purePct:3.80  },
+        { id:genId(), materialName:'Patchouli EO',           dilution:100, purePct:3.80  },
+        { id:genId(), materialName:'Rose Givco 217',         dilution:10,  purePct:5.71  },
+        { id:genId(), materialName:'Vetiver EO',             dilution:100, purePct:1.27  },
+        { id:genId(), materialName:'β-ionone',              dilution:100, purePct:3.02  },
+      ]
+    },
+    {
+      id: fid2,
+      name: 'Amber Accord',
+      category: 'Most used bases',
+      notes: 'A classic amber base combining labdanum, benzoin, ambroxan and vanillin.',
+      targetBatchWeight: 5,
+      targetConcentration: 100,
+      rows: [
+        { id:genId(), materialName:'Ambroxan',               dilution:10,  purePct:16.67 },
+        { id:genId(), materialName:'Benzoin Resinoid, Siam', dilution:10,  purePct:16.67 },
+        { id:genId(), materialName:'Labdanum Abs.',          dilution:100, purePct:50.00 },
+        { id:genId(), materialName:'Vanillin',               dilution:10,  purePct:16.66 },
+      ]
+    }
+  ];
+  saveState();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CALCULATION ENGINE
+// ═══════════════════════════════════════════════════════════════════════════════
+function calcFormula(formula) {
+  const batchWeight   = parseFloat(formula.targetBatchWeight)    || 0;
+  const concentration = parseFloat(formula.targetConcentration)  || 0;
+  const totalOilNeeded = batchWeight * (concentration / 100);
+
+  let totalRawIngredients = 0;
+  let totalCost = 0;
+  let totalPurePct = 0;
+
+  const rows = formula.rows.map(row => {
+    const purePct  = parseFloat(row.purePct)  || 0;
+    const dilution = parseFloat(row.dilution) || 100;
+    const componentWeightShare = totalOilNeeded * (purePct / 100);
+    const rawWeight = dilution > 0 ? componentWeightShare / (dilution / 100) : 0;
+
+    const mat = state.materials.find(m => m.name === row.materialName);
+    const costPerG = mat ? (parseFloat(mat.costPerGram) || 0) : 0;
+    const rowCost = rawWeight * costPerG;
+
+    totalPurePct         += purePct;
+    totalRawIngredients  += rawWeight;
+    totalCost            += rowCost;
+
+    return { ...row, purePct, dilution, componentWeightShare, rawWeight, rowCost };
+  });
+
+  const solventWeight = Math.max(0, batchWeight - totalRawIngredients);
+  return { rows, totalPurePct, totalRawIngredients, solventWeight, totalOilNeeded, batchWeight, concentration, totalCost };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// UI STATE
+// ═══════════════════════════════════════════════════════════════════════════════
+let uiState = {
+  activeTab: 'inventory',   // 'inventory' | 'formulas'
+  currentFormulaId: null,
+  matSearch: '',
+  matFilter: 'all',
+  formulaSearch: '',
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════════════════════
+function fmt(n, d) {
+  d = d === undefined ? 3 : d;
+  if (n === null || n === undefined || isNaN(n) || !isFinite(n)) return '—';
+  return parseFloat(n).toFixed(d);
+}
+
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/"/g,'&quot;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+
+function escAttr(s) {
+  return esc(s).replace(/'/g,'&#39;');
+}
+
+function showToast(msg, type) {
+  type = type || 'success';
+  const c = document.getElementById('toast-container');
+  if (!c) return;
+  const t = document.createElement('div');
+  t.className = 'toast' + (type === 'error' ? ' toast-error' : '');
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.transition = 'opacity 0.3s';
+    t.style.opacity = '0';
+    setTimeout(() => t.remove(), 300);
+  }, 2500);
+}
+
+function getTypeColor(type) {
+  const map = {
+    'Synthetic Molecule':    'background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.25)',
+    'Natural Essential Oil': 'background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)',
+    'Natural Absolute':      'background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.25)',
+    'Natural Resinoid':      'background:rgba(251,146,60,0.15);color:#fdba74;border:1px solid rgba(251,146,60,0.25)',
+    'Synthetic Accord':      'background:rgba(167,139,250,0.15);color:#c4b5fd;border:1px solid rgba(167,139,250,0.25)',
+    'Solvent':               'background:rgba(100,116,139,0.15);color:#94a3b8;border:1px solid rgba(100,116,139,0.25)',
+    'Other':                 'background:rgba(100,116,139,0.1);color:#94a3b8;border:1px solid rgba(100,116,139,0.2)',
+  };
+  return map[type] || map['Other'];
+}
+
+function getFingerprint(formula) {
+  const noteMap = {
+    Amber:    ['Amber','Balsamic'],
+    Aromatic: ['Aromatic','Herbal'],
+    Citrus:   ['Citrus'],
+    Floral:   ['Floral','Rose','Jasmine'],
+    Green:    ['Green','Grass'],
+    Modifier: ['Modifier'],
+    Musk:     ['Musk','Clean'],
+    Violet:   ['Violet'],
+    Woody:    ['Woody','Cedar','Earthy'],
+    Sweet:    ['Sweet','Vanilla','Fruity'],
+  };
+  const fp = {};
+  formula.rows.forEach(row => {
+    const mat = state.materials.find(m => m.name === row.materialName);
+    if (!mat || !mat.notes) return;
+    const pct = parseFloat(row.purePct) || 0;
+    Object.entries(noteMap).forEach(([key, keywords]) => {
+      if (keywords.some(k => mat.notes.includes(k))) {
+        fp[key] = (fp[key] || 0) + pct;
+      }
+    });
+  });
+  return fp;
+}
+
+const FP_COLORS = {
+  Amber:'#f59e0b', Aromatic:'#10b981', Citrus:'#facc15',
+  Floral:'#ec4899', Green:'#22c55e', Modifier:'#94a3b8',
+  Musk:'#60a5fa', Violet:'#a78bfa', Woody:'#92400e', Sweet:'#fb923c'
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CRUD ACTIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+function saveMaterial(editId) {
+  const name = (document.getElementById('m-name').value || '').trim();
+  if (!name) { showToast('Material name is required', 'error'); return; }
+  const mat = {
+    id:          editId || genId(),
+    name,
+    type:        document.getElementById('m-type').value,
+    pyramid:     document.getElementById('m-pyramid').value,
+    description: (document.getElementById('m-desc').value || '').trim(),
+    notes:       (document.getElementById('m-notes').value || '').trim(),
+    costPerGram: parseFloat(document.getElementById('m-cost').value) || 0,
+    stock:       parseFloat(document.getElementById('m-stock').value) || 0,
+    dilution:    parseFloat(document.getElementById('m-dil').value) || 100,
+  };
+  if (editId) {
+    const i = state.materials.findIndex(m => m.id === editId);
+    if (i >= 0) state.materials[i] = mat;
+  } else {
+    state.materials.push(mat);
+  }
+  saveState();
+  closeModal();
+  render();
+  showToast(editId ? 'Material updated' : 'Material added');
+}
+
+function saveFormula(editId) {
+  const name = (document.getElementById('f-name').value || '').trim();
+  if (!name) { showToast('Formula name is required', 'error'); return; }
+  const category = (document.getElementById('f-cat').value || '').trim() || 'Ideas';
+  const notes    = (document.getElementById('f-notes').value || '').trim();
+  if (editId) {
+    const f = state.formulas.find(f => f.id === editId);
+    if (f) { f.name = name; f.category = category; f.notes = notes; }
+  } else {
+    const nf = { id:genId(), name, category, notes, targetBatchWeight:10, targetConcentration:20, rows:[] };
+    state.formulas.push(nf);
+    uiState.currentFormulaId = nf.id;
+  }
+  saveState();
+  closeModal();
+  render();
+  showToast(editId ? 'Formula updated' : 'Formula created');
+}
+
+function confirmDelete(type, id) {
+  if (type === 'material') {
+    state.materials = state.materials.filter(m => m.id !== id);
+  } else {
+    state.formulas = state.formulas.filter(f => f.id !== id);
+    if (uiState.currentFormulaId === id) uiState.currentFormulaId = null;
+  }
+  saveState();
+  closeModal();
+  render();
+  showToast('Deleted successfully');
+}
+
+function duplicateFormula(fid) {
+  const f = state.formulas.find(f => f.id === fid);
+  if (!f) return;
+  const copy = JSON.parse(JSON.stringify(f));
+  copy.id   = genId();
+  copy.name = f.name + ' (copy)';
+  copy.rows = copy.rows.map(r => ({ ...r, id: genId() }));
+  state.formulas.push(copy);
+  saveState();
+  uiState.currentFormulaId = copy.id;
+  render();
+  showToast('Formula duplicated');
+}
+
+function addFormulaRow(fid) {
+  const f = state.formulas.find(f => f.id === fid);
+  if (!f) return;
+  f.rows.push({ id:genId(), materialName:'', dilution:100, purePct:0 });
+  saveState();
+  refreshEditorTable(fid);
+  refreshEditorSidebar(fid);
+}
+
+function removeFormulaRow(fid, rid) {
+  const f = state.formulas.find(f => f.id === fid);
+  if (!f) return;
+  f.rows = f.rows.filter(r => r.id !== rid);
+  saveState();
+  refreshEditorTable(fid);
+  refreshEditorSidebar(fid);
+}
+
+function updateRow(fid, rid, field, value) {
+  const f = state.formulas.find(f => f.id === fid);
+  if (!f) return;
+  const row = f.rows.find(r => r.id === rid);
+  if (!row) return;
+  row[field] = value;
+  if (field === 'materialName') {
+    const mat = state.materials.find(m => m.name === value);
+    if (mat) { row.dilution = mat.dilution; }
+    // update dilution input in the same row
+    const dilEl = document.getElementById('dil-' + rid);
+    if (dilEl && mat) dilEl.value = mat.dilution;
+  }
+  saveState();
+  refreshEditorCalc(fid);
+}
+
+function updateFormulaGlobal(fid, field, value) {
+  const f = state.formulas.find(f => f.id === fid);
+  if (!f) return;
+  f[field] = parseFloat(value) || (field === 'targetBatchWeight' ? 10 : 20);
+  saveState();
+  refreshEditorCalc(fid);
+}
+
+function applyScaleWeight(fid) {
+  const v = parseFloat(document.getElementById('scale-weight').value);
+  if (!v || v <= 0) { showToast('Enter a valid weight', 'error'); return; }
+  const f = state.formulas.find(f => f.id === fid);
+  if (f) { f.targetBatchWeight = v; saveState(); closeModal(); render(); showToast('Scaled to ' + v + 'g'); }
+}
+
+function applyScaleFactor(fid) {
+  const sf = parseFloat(document.getElementById('scale-factor').value);
+  if (!sf || sf <= 0) { showToast('Enter a valid factor', 'error'); return; }
+  const f = state.formulas.find(f => f.id === fid);
+  if (f) { f.targetBatchWeight = parseFloat((f.targetBatchWeight * sf).toFixed(4)); saveState(); closeModal(); render(); showToast('Scaled ×' + sf); }
+}
+
+function copyExport() {
+  const ta = document.getElementById('export-tsv');
+  if (!ta) return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(ta.value).then(() => showToast('Copied to clipboard!')).catch(() => { ta.select(); document.execCommand('copy'); showToast('Copied!'); });
+  } else { ta.select(); document.execCommand('copy'); showToast('Copied!'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MODAL SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════════
+let activeModal = null;
+let modalPayload = {};
+
+function openModal(name, payload) {
+  activeModal = name;
+  modalPayload = payload || {};
+  renderModal();
+}
+
+function closeModal() {
+  activeModal = null;
+  modalPayload = {};
+  const c = document.getElementById('modal-container');
+  if (c) c.innerHTML = '';
+}
+
+function renderModal() {
+  const c = document.getElementById('modal-container');
+  if (!c || !activeModal) return;
+  if (activeModal === 'material')       c.innerHTML = buildMaterialModal();
+  else if (activeModal === 'formula')   c.innerHTML = buildFormulaModal();
+  else if (activeModal === 'delete')    c.innerHTML = buildDeleteModal();
+  else if (activeModal === 'export')    c.innerHTML = buildExportModal();
+  else if (activeModal === 'scale')     c.innerHTML = buildScaleModal();
+  lucide.createIcons();
+}
+
+function buildMaterialModal() {
+  const mat = modalPayload.material || null;
+  const isEdit = !!mat;
+  const d = mat || { name:'', type:'Synthetic Molecule', description:'', costPerGram:'', stock:'', dilution:100, notes:'', pyramid:'Middle' };
+  const types = ['Synthetic Molecule','Natural Essential Oil','Natural Absolute','Natural Resinoid','Synthetic Accord','Solvent','Other'];
+  const pyramids = ['Top','High','Middle','Bottom','Base','Solvent'];
+  return `<div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2 class="font-display" style="font-size:22px;font-weight:600;color:#f1f5f9">${isEdit?'Edit':'Add'} Raw Material</h2>
+      <button onclick="closeModal()" style="color:#64748b;background:none;border:none;cursor:pointer;padding:4px"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div><label class="label">Material Name *</label><input id="m-name" type="text" value="${escAttr(d.name)}" placeholder="e.g. Ambroxan" /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label class="label">Type</label><select id="m-type">${types.map(t=>`<option value="${escAttr(t)}"${d.type===t?' selected':''}>${esc(t)}</option>`).join('')}</select></div>
+        <div><label class="label">Pyramid Level</label><select id="m-pyramid">${pyramids.map(t=>`<option value="${escAttr(t)}"${d.pyramid===t?' selected':''}>${esc(t)}</option>`).join('')}</select></div>
+      </div>
+      <div><label class="label">Scent Description</label><input id="m-desc" type="text" value="${escAttr(d.description)}" placeholder="e.g. Amber, woody, radiant, warm" /></div>
+      <div><label class="label">Note Tags <span style="color:#475569;font-size:11px">(comma separated, e.g. Amber, Musk)</span></label><input id="m-notes" type="text" value="${escAttr(d.notes)}" placeholder="e.g. Amber, Musky" /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div><label class="label">Cost/gram ($)</label><input id="m-cost" type="number" step="0.01" min="0" value="${escAttr(d.costPerGram)}" placeholder="1.40" /></div>
+        <div><label class="label">Stock (g)</label><input id="m-stock" type="number" step="0.1" min="0" value="${escAttr(d.stock)}" placeholder="100" /></div>
+        <div><label class="label">Default Dilution %</label><input id="m-dil" type="number" step="0.001" min="0.001" max="100" value="${escAttr(d.dilution)}" placeholder="100" /></div>
+      </div>
+      <div style="display:flex;gap:10px;padding-top:6px">
+        <button class="btn-primary" style="flex:1;justify-content:center" onclick="saveMaterial('${isEdit?escAttr(mat.id):''}')">
+          <i data-lucide="${isEdit?'save':'plus'}" style="width:15px;height:15px"></i>${isEdit?'Save Changes':'Add Material'}
+        </button>
+        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div></div>`;
+}
+
+function buildFormulaModal() {
+  const f = modalPayload.formula || null;
+  const isEdit = !!f;
+  const d = f || { name:'', category:'Ideas', notes:'' };
+  const cats = [...new Set(['Ideas','In Progress','Final','Accords','Archive',...state.formulas.map(ff=>ff.category).filter(Boolean)])].filter((v,i,a)=>a.indexOf(v)===i);
+  return `<div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2 class="font-display" style="font-size:22px;font-weight:600;color:#f1f5f9">${isEdit?'Edit':'New'} Formula</h2>
+      <button onclick="closeModal()" style="color:#64748b;background:none;border:none;cursor:pointer;padding:4px"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div><label class="label">Formula Name *</label><input id="f-name" type="text" value="${escAttr(d.name)}" placeholder="e.g. Woody Floral EDP" /></div>
+      <div><label class="label">Category</label>
+        <input id="f-cat" type="text" value="${escAttr(d.category)}" list="cat-datalist" placeholder="Ideas" />
+        <datalist id="cat-datalist">${cats.map(c=>`<option value="${escAttr(c)}"></option>`).join('')}</datalist>
+      </div>
+      <div><label class="label">Notes</label><textarea id="f-notes" rows="3" placeholder="Describe your fragrance vision…" style="resize:vertical">${esc(d.notes)}</textarea></div>
+      <div style="display:flex;gap:10px;padding-top:6px">
+        <button class="btn-primary" style="flex:1;justify-content:center" onclick="saveFormula('${isEdit?escAttr(f.id):''}')">
+          <i data-lucide="${isEdit?'save':'plus'}" style="width:15px;height:15px"></i>${isEdit?'Save Changes':'Create Formula'}
+        </button>
+        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div></div>`;
+}
+
+function buildDeleteModal() {
+  const { type, id, name } = modalPayload;
+  const label = type === 'material' ? 'Material' : 'Formula';
+  return `<div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" style="max-width:380px">
+    <div style="text-align:center;padding:8px 0">
+      <div style="width:52px;height:52px;border-radius:50%;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+        <i data-lucide="trash-2" style="width:24px;height:24px;color:#f87171"></i>
+      </div>
+      <h3 class="font-display" style="font-size:20px;font-weight:600;color:#f1f5f9;margin-bottom:6px">Delete ${esc(label)}?</h3>
+      <p style="color:#94a3b8;font-size:13px;margin-bottom:20px">"${esc(name)}" will be permanently removed and cannot be recovered.</p>
+      <div style="display:flex;gap:10px">
+        <button class="btn-secondary" style="flex:1;justify-content:center" onclick="closeModal()">Cancel</button>
+        <button class="btn-danger" style="flex:1;justify-content:center" onclick="confirmDelete('${escAttr(type)}','${escAttr(id)}')">
+          <i data-lucide="trash-2" style="width:14px;height:14px"></i>Delete
+        </button>
+      </div>
+    </div>
+  </div></div>`;
+}
+
+function buildExportModal() {
+  const { formulaId } = modalPayload;
+  const formula = state.formulas.find(f => f.id === formulaId);
+  if (!formula) return '<div></div>';
+  const calc = calcFormula(formula);
+  let tsv = 'Formula: ' + formula.name + '\tBatch: ' + formula.targetBatchWeight + 'g\tConcentration: ' + formula.targetConcentration + '%\n';
+  tsv += '\n';
+  tsv += 'Material\tDilution %\tPure %\tRaw Weight (g)\tEst. Cost ($)\n';
+  calc.rows.forEach(row => {
+    tsv += [row.materialName, fmt(row.dilution,1)+'%', fmt(row.purePct,3)+'%', fmt(row.rawWeight,4)+'g', '$'+fmt(row.rowCost,3)].join('\t') + '\n';
+  });
+  tsv += ['Solvent / Carrier','100%','—',fmt(calc.solventWeight,4)+'g','—'].join('\t') + '\n';
+  tsv += '\n';
+  tsv += 'Total Pure %\t' + fmt(calc.totalPurePct,3) + '%\n';
+  tsv += 'Total Batch\t' + formula.targetBatchWeight + 'g\n';
+  tsv += 'Est. Total Cost\t$' + fmt(calc.totalCost,2) + '\n';
+
+  return `<div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" style="max-width:560px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h2 class="font-display" style="font-size:20px;font-weight:600;color:#f1f5f9">Export Formula</h2>
+      <button onclick="closeModal()" style="color:#64748b;background:none;border:none;cursor:pointer;padding:4px"><i data-lucide="x" style="width:18px;height:18px"></i></button>
+    </div>
+    <p style="color:#94a3b8;font-size:13px;margin-bottom:12px">Tab-separated — paste directly into Microsoft Excel or Google Sheets.</p>
+    <textarea id="export-tsv" rows="16" style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(2,6,23,0.8);resize:vertical">${esc(tsv)}</textarea>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn-primary" style="flex:1;justify-content:center" onclick="copyExport()">
+        <i data-lucide="clipboard" style="width:15px;height:15px"></i>Copy to Clipboard
+      </button>
+      <button class="btn-secondary" onclick="closeModal()">Close</button>
+    </div>
+  </div></div>`;
+}
+
+function buildScaleModal() {
+  const { formulaId } = modalPayload;
+  const formula = state.formulas.find(f => f.id === formulaId);
+  if (!formula) return '<div></div>';
+  const calc = calcFormula(formula);
+  const maxFactor = formula.targetBatchWeight > 0 ? (10000 / formula.targetBatchWeight).toFixed(1) : '—';
+  return `<div class="modal-backdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" style="max-width:440px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2 class="font-display" style="font-size:22px;font-weight:600;color:#f1f5f9">Scale Formula</h2>
+      <button onclick="closeModal()" style="color:#64748b;background:none;border:none;cursor:pointer;padding:4px"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="glass-light" style="padding:16px;border-radius:10px">
+        <div class="section-header" style="margin-bottom:10px">Scale to Total Weight</div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px">
+          <span style="color:#94a3b8">Current weight</span>
+          <span class="number-display">${fmt(formula.targetBatchWeight,3)} g</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-end">
+          <div style="flex:1"><label class="label">New weight (g)</label><input id="scale-weight" type="number" step="0.1" min="0.1" placeholder="e.g. 50" /></div>
+          <button class="btn-primary" onclick="applyScaleWeight('${escAttr(formulaId)}')">Apply</button>
+        </div>
+      </div>
+      <div class="glass-light" style="padding:16px;border-radius:10px">
+        <div class="section-header" style="margin-bottom:10px">Scale by Factor</div>
+        <div style="display:flex;gap:8px;align-items:flex-end">
+          <div style="flex:1"><label class="label">Factor (e.g. 2 = double batch)</label><input id="scale-factor" type="number" step="0.1" min="0.01" placeholder="e.g. 2.5" /></div>
+          <button class="btn-primary" onclick="applyScaleFactor('${escAttr(formulaId)}')">Apply</button>
+        </div>
+      </div>
+      <div class="glass-light" style="padding:16px;border-radius:10px">
+        <div class="section-header" style="margin-bottom:10px">Current Stats</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+          <span style="color:#94a3b8">Batch</span><span class="number-display">${fmt(formula.targetBatchWeight,3)} g</span>
+          <span style="color:#94a3b8">Concentration</span><span class="number-display">${formula.targetConcentration}%</span>
+          <span style="color:#94a3b8">Oil needed</span><span class="number-display">${fmt(calc.totalOilNeeded,4)} g</span>
+          <span style="color:#94a3b8">Solvent needed</span><span class="number-display">${fmt(calc.solventWeight,4)} g</span>
+          <span style="color:#94a3b8">Est. cost</span><span class="number-display">$${fmt(calc.totalCost,2)}</span>
+          <span style="color:#94a3b8">Max ×factor</span><span class="number-display">${maxFactor}</span>
+        </div>
+      </div>
+    </div>
+  </div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RENDER SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════════
+function render() {
+  document.getElementById('app').innerHTML = buildApp();
+  lucide.createIcons();
+}
+
+function buildApp() {
+  return buildHeader() +
+    '<div style="display:flex;flex-direction:column;flex:1;min-height:0">' +
+    (uiState.activeTab === 'inventory' ? buildInventoryView() : buildFormulasView()) +
+    '</div>' +
+    buildFooter();
+}
+
+// ─── HEADER ───────────────────────────────────────────────────────────────────
+function buildHeader() {
+  const inv = uiState.activeTab === 'inventory';
+  const form = uiState.activeTab === 'formulas';
+  return `<header class="glass" style="position:sticky;top:0;z-index:40;padding:0 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(51,65,85,0.5)">
+  <div style="display:flex;align-items:center;gap:10px;padding:12px 0;margin-right:8px;flex-shrink:0">
+    <div style="width:34px;height:34px;background:linear-gradient(135deg,#10b981,#0d9488);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <i data-lucide="flask-conical" style="width:18px;height:18px;color:#020617"></i>
+    </div>
+    <span class="font-display" style="font-size:20px;font-weight:600;color:#f1f5f9;white-space:nowrap" id="brand-label">Formulair</span>
+  </div>
+  <nav style="display:flex;gap:0;flex-shrink:0">
+    <button onclick="switchTab('inventory')" class="tab-${inv?'active':'inactive'}" style="padding:14px 12px;font-size:13px;font-weight:500;cursor:pointer;background:none;border:none;border-bottom-width:2px;display:flex;align-items:center;gap:6px;white-space:nowrap">
+      <i data-lucide="test-tubes" style="width:15px;height:15px"></i>
+      <span>Inventory</span>
+      <span style="font-size:10px;padding:1px 6px;border-radius:10px;${inv?'background:rgba(16,185,129,0.15);color:#6ee7b7':'background:rgba(51,65,85,0.5);color:#64748b'}">${state.materials.length}</span>
+    </button>
+    <button onclick="switchTab('formulas')" class="tab-${form?'active':'inactive'}" style="padding:14px 12px;font-size:13px;font-weight:500;cursor:pointer;background:none;border:none;border-bottom-width:2px;display:flex;align-items:center;gap:6px;white-space:nowrap">
+      <i data-lucide="book-open" style="width:15px;height:15px"></i>
+      <span>Formulas</span>
+      <span style="font-size:10px;padding:1px 6px;border-radius:10px;${form?'background:rgba(16,185,129,0.15);color:#6ee7b7':'background:rgba(51,65,85,0.5);color:#64748b'}">${state.formulas.length}</span>
+    </button>
+  </nav>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+    ${inv ? `<button class="btn-primary" style="font-size:12px;padding:7px 12px" onclick="openModal('material')"><i data-lucide="plus" style="width:14px;height:14px"></i><span class="hide-mobile">Add Material</span><span style="display:none" class="show-mobile">Add</span></button>` : ''}
+    ${form && !uiState.currentFormulaId ? `<button class="btn-primary" style="font-size:12px;padding:7px 12px" onclick="openModal('formula')"><i data-lucide="plus" style="width:14px;height:14px"></i><span class="hide-mobile">New Formula</span><span style="display:none" class="show-mobile">New</span></button>` : ''}
+  </div>
+</header>`;
+}
+
+function buildFooter() {
+  return `<footer class="glass" style="padding:10px 20px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(51,65,85,0.4);flex-shrink:0">
+  <span style="font-size:11px;color:#334155;display:flex;align-items:center;gap:6px">
+    <i data-lucide="shield" style="width:11px;height:11px;color:#1e3a2f"></i>
+    All formulation data is stored locally on this machine.
+  </span>
+  <span class="font-display" style="font-size:12px;color:#1e293b;font-style:italic">Formulair Studio v1.0</span>
+</footer>`;
+}
+
+function switchTab(tab) {
+  uiState.activeTab = tab;
+  if (tab === 'inventory') uiState.currentFormulaId = null;
+  render();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INVENTORY VIEW
+// ═══════════════════════════════════════════════════════════════════════════════
+function buildInventoryView() {
+  const types = [...new Set(state.materials.map(m=>m.type).filter(Boolean))];
+  const filtered = getFilteredMaterials();
+  const totalValue = state.materials.reduce((s,m) => s + ((parseFloat(m.stock)||0)*(parseFloat(m.costPerGram)||0)), 0);
+
+  return `<div style="padding:24px;max-width:1400px;margin:0 auto;width:100%;flex:1;overflow-y:auto">
+    <div style="margin-bottom:24px">
+      <h1 class="font-display" style="font-size:30px;font-weight:300;color:#f1f5f9;line-height:1.2">
+        Raw Materials <span style="color:#10b981;opacity:0.8">Library</span>
+      </h1>
+      <p style="color:#475569;font-size:13px;margin-top:4px">Manage your aroma chemicals, naturals, and base materials.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px">
+      ${buildStatCard('Total Materials', state.materials.length, 'layers')}
+      ${buildStatCard('Synthetics', state.materials.filter(m=>m.type==='Synthetic Molecule').length, 'zap')}
+      ${buildStatCard('Naturals', state.materials.filter(m=>['Natural Essential Oil','Natural Absolute','Natural Resinoid'].includes(m.type)).length, 'leaf')}
+      ${buildStatCard('Inv. Value', '$'+fmt(totalValue,2), 'trending-up')}
+    </div>
+
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <div style="position:relative;flex:1;min-width:200px">
+        <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#475569;pointer-events:none"><i data-lucide="search" style="width:15px;height:15px"></i></span>
+        <input type="text" placeholder="Search materials…" value="${escAttr(uiState.matSearch)}"
+          style="padding-left:32px"
+          oninput="uiState.matSearch=this.value;refreshInventoryTable()" />
+      </div>
+      <select style="max-width:220px" onchange="uiState.matFilter=this.value;refreshInventoryTable()">
+        <option value="all" ${uiState.matFilter==='all'?'selected':''}>All Types</option>
+        ${types.map(t=>`<option value="${escAttr(t)}" ${uiState.matFilter===t?'selected':''}>${esc(t)}</option>`).join('')}
+      </select>
+    </div>
+
+    <div class="glass" style="border-radius:12px;overflow:hidden">
+      <div id="inventory-table-wrap">${buildInventoryTable(filtered)}</div>
+    </div>
+  </div>`;
+}
+
+function buildStatCard(label, value, icon) {
+  return `<div class="glass-light" style="border-radius:12px;padding:14px 16px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <i data-lucide="${icon}" style="width:14px;height:14px;color:#10b981;flex-shrink:0"></i>
+      <span class="section-header">${esc(label)}</span>
+    </div>
+    <div class="number-display" style="font-size:18px">${esc(String(value))}</div>
+  </div>`;
+}
+
+function getFilteredMaterials() {
+  const q = uiState.matSearch.toLowerCase();
+  return state.materials.filter(m => {
+    const matchQ = !q || m.name.toLowerCase().includes(q) || (m.description||'').toLowerCase().includes(q) || (m.notes||'').toLowerCase().includes(q);
+    const matchType = uiState.matFilter === 'all' || m.type === uiState.matFilter;
+    return matchQ && matchType;
+  });
+}
+
+function buildInventoryTable(materials) {
+  if (materials.length === 0) {
+    return `<div class="empty-state"><p class="font-display" style="font-size:18px;margin-bottom:4px;color:#334155">No materials found</p><p style="font-size:13px">Try a different search, or add a new material.</p></div>`;
+  }
+  return `<div style="overflow-x:auto"><table>
+  <thead><tr>
+    <th>Material</th>
+    <th class="hide-mobile">Type</th>
+    <th class="hide-mobile">Pyramid</th>
+    <th>Dilution</th>
+    <th class="hide-mobile">Cost/g</th>
+    <th>Stock</th>
+    <th style="text-align:right">Actions</th>
+  </tr></thead>
+  <tbody>
+    ${materials.map(m => {
+      const matJson = escAttr(JSON.stringify(m));
+      return `<tr class="recipe-row">
+        <td>
+          <div style="font-weight:500;color:#f1f5f9;font-size:14px">${esc(m.name)}</div>
+          ${m.description ? `<div style="color:#64748b;font-size:11px;margin-top:2px">${esc(m.description)}</div>` : ''}
+          ${m.notes ? `<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:4px">${m.notes.split(',').map(n=>`<span class="note-tag">${esc(n.trim())}</span>`).join('')}</div>` : ''}
+        </td>
+        <td class="hide-mobile"><span class="category-pill" style="${getTypeColor(m.type)}">${esc(m.type)}</span></td>
+        <td class="hide-mobile"><span style="color:#64748b;font-size:12px">${esc(m.pyramid||'—')}</span></td>
+        <td><span class="number-display">${m.dilution}%</span></td>
+        <td class="hide-mobile"><span class="number-display">$${fmt(m.costPerGram,2)}</span></td>
+        <td><span class="number-display" style="${(parseFloat(m.stock)||0)<20?'color:#f87171':''}">${fmt(parseFloat(m.stock)||0,1)}g</span></td>
+        <td>
+          <div style="display:flex;justify-content:flex-end;gap:4px">
+            <button class="btn-secondary" style="padding:5px 8px" onclick='openModal("material",{material:JSON.parse(decodeURIComponent("${encodeURIComponent(JSON.stringify(m))}"))})'>
+              <i data-lucide="edit-2" style="width:13px;height:13px"></i>
+            </button>
+            <button class="btn-danger" style="padding:5px 8px" onclick="openModal('delete',{type:'material',id:'${escAttr(m.id)}',name:'${escAttr(m.name)}'})">
+              <i data-lucide="trash-2" style="width:13px;height:13px"></i>
+            </button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('')}
+  </tbody></table></div>`;
+}
+
+function refreshInventoryTable() {
+  const el = document.getElementById('inventory-table-wrap');
+  if (el) { el.innerHTML = buildInventoryTable(getFilteredMaterials()); lucide.createIcons(); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FORMULAS VIEW
+// ═══════════════════════════════════════════════════════════════════════════════
+function buildFormulasView() {
+  if (uiState.currentFormulaId) {
+    const f = state.formulas.find(f => f.id === uiState.currentFormulaId);
+    if (f) return buildFormulaEditor(f);
+    uiState.currentFormulaId = null;
+  }
+  return buildFormulaList();
+}
+
+function buildFormulaList() {
+  const filtered = state.formulas.filter(f => {
+    const q = uiState.formulaSearch.toLowerCase();
+    return !q || f.name.toLowerCase().includes(q) || (f.category||'').toLowerCase().includes(q);
+  });
+  const byCat = {};
+  filtered.forEach(f => { const c = f.category||'Uncategorized'; if(!byCat[c]) byCat[c]=[]; byCat[c].push(f); });
+
+  return `<div style="padding:24px;max-width:1400px;margin:0 auto;width:100%;flex:1;overflow-y:auto">
+    <div style="margin-bottom:24px">
+      <h1 class="font-display" style="font-size:30px;font-weight:300;color:#f1f5f9">
+        Formulas <span style="color:#10b981;opacity:0.8">Library</span>
+      </h1>
+      <p style="color:#475569;font-size:13px;margin-top:4px">Your fragrance formulas, accords, and blueprints.</p>
+    </div>
+    <div style="position:relative;margin-bottom:20px">
+      <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#475569;pointer-events:none"><i data-lucide="search" style="width:15px;height:15px"></i></span>
+      <input type="text" placeholder="Search formulas…" value="${escAttr(uiState.formulaSearch)}"
+        style="padding-left:32px;max-width:400px"
+        oninput="uiState.formulaSearch=this.value;refreshFormulaList()" />
+    </div>
+    <div id="formula-list-wrap">
+      ${buildFormulaListContent(byCat)}
+    </div>
+  </div>`;
+}
+
+function buildFormulaListContent(byCat) {
+  if (Object.keys(byCat).length === 0) {
+    return `<div class="empty-state glass" style="border-radius:12px"><p class="font-display" style="font-size:18px;margin-bottom:4px;color:#334155">No formulas yet</p><p style="font-size:13px">Create your first formula to begin blending.</p></div>`;
+  }
+  return Object.entries(byCat).map(([cat, formulas]) => `
+    <div style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <span class="section-header">${esc(cat)}</span>
+        <div style="flex:1;height:1px;background:rgba(51,65,85,0.4)"></div>
+        <span style="font-size:11px;color:#334155">${formulas.length}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
+        ${formulas.map(f => buildFormulaCard(f)).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function buildFormulaCard(f) {
+  const calc = calcFormula(f);
+  const bal = calc.totalPurePct;
+  const balStyle = Math.abs(bal-100)<0.01 ? 'color:#10b981' : bal>100 ? 'color:#f87171' : 'color:#fbbf24';
+  const fp = getFingerprint(f);
+  const fpEntries = Object.entries(fp).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const fpMax = fpEntries.length ? Math.max(...fpEntries.map(e=>e[1])) : 1;
+
+  return `<div class="glass-light" style="border-radius:12px;padding:16px;cursor:pointer;transition:border-color 0.15s"
+    onclick="openFormula('${escAttr(f.id)}')"
+    onmouseover="this.style.borderColor='#475569'" onmouseout="this.style.borderColor='rgba(71,85,105,0.4)'">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+      <div style="flex:1;min-width:0;margin-right:8px">
+        <div style="font-weight:500;color:#f1f5f9;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(f.name)}</div>
+        <div style="color:#475569;font-size:11px;margin-top:2px">${f.rows.length} ingredients · ${f.targetBatchWeight}g · ${f.targetConcentration}% conc.</div>
+      </div>
+      <div style="display:flex;gap:2px;flex-shrink:0">
+        <button style="background:none;border:none;cursor:pointer;color:#475569;padding:4px;border-radius:4px" onclick='event.stopPropagation();openModal("formula",{formula:JSON.parse(decodeURIComponent("${encodeURIComponent(JSON.stringify(f))}"))})' onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#475569'">
+          <i data-lucide="edit-2" style="width:13px;height:13px"></i>
+        </button>
+        <button style="background:none;border:none;cursor:pointer;color:#475569;padding:4px;border-radius:4px" onclick="event.stopPropagation();openModal('delete',{type:'formula',id:'${escAttr(f.id)}',name:'${escAttr(f.name)}'})" onmouseover="this.style.color='#f87171'" onmouseout="this.style.color='#475569'">
+          <i data-lucide="trash-2" style="width:13px;height:13px"></i>
+        </button>
+      </div>
+    </div>
+    ${f.notes ? `<p style="color:#475569;font-size:11px;font-style:italic;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">"${esc(f.notes)}"</p>` : ''}
+    <div style="display:flex;gap:16px;margin-bottom:10px">
+      <div style="text-align:center"><div class="number-display" style="font-size:12px;${balStyle}">${fmt(bal,1)}%</div><div style="font-size:9px;color:#334155;margin-top:1px">balance</div></div>
+      <div style="text-align:center"><div class="number-display" style="font-size:12px">${fmt(calc.totalOilNeeded,2)}g</div><div style="font-size:9px;color:#334155;margin-top:1px">oil</div></div>
+      <div style="text-align:center"><div class="number-display" style="font-size:12px">$${fmt(calc.totalCost,2)}</div><div style="font-size:9px;color:#334155;margin-top:1px">cost</div></div>
+    </div>
+    ${fpEntries.length ? `<div style="padding-top:8px;border-top:1px solid rgba(30,41,59,0.8);display:flex;flex-direction:column;gap:4px">
+      ${fpEntries.map(([k,v]) => `<div style="display:flex;align-items:center;gap:6px">
+        <span style="color:#475569;font-size:10px;width:48px;flex-shrink:0">${esc(k)}</span>
+        <div style="flex:1;height:4px;background:rgba(51,65,85,0.5);border-radius:2px;overflow:hidden">
+          <div style="height:100%;border-radius:2px;background:${FP_COLORS[k]||'#64748b'};width:${Math.round(v/fpMax*100)}%;transition:width 0.3s"></div>
+        </div>
+      </div>`).join('')}
+    </div>` : ''}
+  </div>`;
+}
+
+function refreshFormulaList() {
+  const filtered = state.formulas.filter(f => {
+    const q = uiState.formulaSearch.toLowerCase();
+    return !q || f.name.toLowerCase().includes(q) || (f.category||'').toLowerCase().includes(q);
+  });
+  const byCat = {};
+  filtered.forEach(f => { const c = f.category||'Uncategorized'; if(!byCat[c]) byCat[c]=[]; byCat[c].push(f); });
+  const el = document.getElementById('formula-list-wrap');
+  if (el) { el.innerHTML = buildFormulaListContent(byCat); lucide.createIcons(); }
+}
+
+function openFormula(id) {
+  uiState.currentFormulaId = id;
+  render();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FORMULA EDITOR
+// ═══════════════════════════════════════════════════════════════════════════════
+function buildFormulaEditor(f) {
+  return `<div style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+    ${buildEditorHeader(f)}
+    <div style="display:flex;flex:1;overflow:hidden">
+      <div style="flex:1;overflow-y:auto;padding:20px 24px" id="editor-main">
+        ${buildEditorMain(f)}
+      </div>
+      <div style="width:288px;overflow-y:auto;border-left:1px solid rgba(51,65,85,0.4);flex-shrink:0" id="editor-sidebar">
+        ${buildEditorSidebar(f)}
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildEditorHeader(f) {
+  return `<div class="glass" style="padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid rgba(51,65,85,0.4);flex-shrink:0">
+    <button onclick="uiState.currentFormulaId=null;render()" style="display:flex;align-items:center;gap:4px;color:#64748b;background:none;border:none;cursor:pointer;font-size:13px;font-family:inherit;padding:4px 8px;border-radius:6px" onmouseover="this.style.color='#f1f5f9';this.style.background='rgba(51,65,85,0.3)'" onmouseout="this.style.color='#64748b';this.style.background='none'">
+      <i data-lucide="chevron-left" style="width:16px;height:16px"></i> Formulas
+    </button>
+    <span style="color:#334155">/</span>
+    <span style="color:#f1f5f9;font-size:14px;font-weight:500">${esc(f.name)}</span>
+    <span class="category-pill" style="background:rgba(51,65,85,0.4);color:#94a3b8;font-size:10px;padding:2px 8px">${esc(f.category||'')}</span>
+    <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn-secondary" style="font-size:11px;padding:6px 10px" onclick="openModal('scale',{formulaId:'${escAttr(f.id)}'})">
+        <i data-lucide="maximize-2" style="width:12px;height:12px"></i><span class="hide-mobile">Scale</span>
+      </button>
+      <button class="btn-secondary" style="font-size:11px;padding:6px 10px" onclick="openModal('export',{formulaId:'${escAttr(f.id)}'})">
+        <i data-lucide="share" style="width:12px;height:12px"></i><span class="hide-mobile">Export</span>
+      </button>
+      <button class="btn-secondary" style="font-size:11px;padding:6px 10px" onclick="duplicateFormula('${escAttr(f.id)}')">
+        <i data-lucide="copy" style="width:12px;height:12px"></i><span class="hide-mobile">Duplicate</span>
+      </button>
+      <button class="btn-secondary" style="font-size:11px;padding:6px 10px" onclick='openModal("formula",{formula:JSON.parse(decodeURIComponent("${encodeURIComponent(JSON.stringify(f))}"))})'>
+        <i data-lucide="edit-2" style="width:12px;height:12px"></i><span class="hide-mobile">Edit</span>
+      </button>
+    </div>
+  </div>`;
+}
+
+function buildEditorMain(f) {
+  const calc = calcFormula(f);
+  return `<div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px">
+      <div class="glass-light" style="padding:12px;border-radius:10px">
+        <label class="label" style="font-size:10px">Target Batch (g)</label>
+        <input type="number" step="0.1" min="0.1" value="${f.targetBatchWeight}"
+          oninput="updateFormulaGlobal('${escAttr(f.id)}','targetBatchWeight',this.value)"
+          onchange="updateFormulaGlobal('${escAttr(f.id)}','targetBatchWeight',this.value)" />
+      </div>
+      <div class="glass-light" style="padding:12px;border-radius:10px">
+        <label class="label" style="font-size:10px">Concentration %</label>
+        <input type="number" step="0.1" min="0.1" max="100" value="${f.targetConcentration}"
+          oninput="updateFormulaGlobal('${escAttr(f.id)}','targetConcentration',this.value)"
+          onchange="updateFormulaGlobal('${escAttr(f.id)}','targetConcentration',this.value)" />
+      </div>
+      <div class="glass-light" style="padding:12px;border-radius:10px">
+        <label class="label" style="font-size:10px">Total Oil Needed (g)</label>
+        <div class="number-display" style="font-size:16px;padding-top:3px" id="stat-oil">${fmt(calc.totalOilNeeded,4)}</div>
+      </div>
+      <div class="glass-light" style="padding:12px;border-radius:10px">
+        <label class="label" style="font-size:10px">Estimated Cost</label>
+        <div class="number-display" style="font-size:16px;padding-top:3px" id="stat-cost">$${fmt(calc.totalCost,2)}</div>
+      </div>
+    </div>
+
+    <div class="glass" style="border-radius:12px;overflow:hidden;margin-bottom:12px" id="recipe-table-container">
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th style="min-width:150px">Material</th>
+            <th style="min-width:85px">Dilution %</th>
+            <th style="min-width:95px">Pure % <span style="color:#334155;font-weight:400;font-size:10px;letter-spacing:0">(of blend)</span></th>
+            <th style="min-width:100px">Raw Weight (g)</th>
+            <th style="min-width:80px" class="hide-mobile">Row Cost</th>
+            <th style="width:32px"></th>
+          </tr></thead>
+          <tbody id="recipe-tbody">
+            ${calc.rows.map(row => buildRecipeRow(f.id, row)).join('')}
+          </tbody>
+          <tfoot id="recipe-tfoot">
+            ${buildRecipeTotals(f, calc)}
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <button class="btn-secondary" style="width:100%;justify-content:center;font-size:13px;padding:10px" onclick="addFormulaRow('${escAttr(f.id)}')">
+      <i data-lucide="plus" style="width:15px;height:15px"></i> Add Ingredient
+    </button>
+  </div>`;
+}
+
+function buildRecipeRow(fid, row) {
+  const matNames = state.materials.map(m => m.name);
+  const listId = 'ml-' + row.id;
+  return `<tr class="recipe-row" id="tr-${escAttr(row.id)}">
+    <td>
+      <input type="text" value="${escAttr(row.materialName)}" list="${listId}"
+        placeholder="Type or select material…"
+        onchange="updateRow('${escAttr(fid)}','${escAttr(row.id)}','materialName',this.value)"
+        style="min-width:130px;font-size:13px" />
+      <datalist id="${listId}">${matNames.map(n=>`<option value="${escAttr(n)}"></option>`).join('')}</datalist>
+    </td>
+    <td>
+      <input type="number" id="dil-${escAttr(row.id)}" step="0.001" min="0.001" max="100" value="${row.dilution}"
+        onchange="updateRow('${escAttr(fid)}','${escAttr(row.id)}','dilution',parseFloat(this.value)||100)"
+        style="min-width:65px;font-size:13px" />
+    </td>
+    <td>
+      <input type="number" step="0.001" min="0" value="${row.purePct}"
+        oninput="updateRow('${escAttr(fid)}','${escAttr(row.id)}','purePct',parseFloat(this.value)||0)"
+        onchange="updateRow('${escAttr(fid)}','${escAttr(row.id)}','purePct',parseFloat(this.value)||0)"
+        style="min-width:75px;font-size:13px" />
+    </td>
+    <td><span class="number-display" id="rw-${escAttr(row.id)}">${fmt(row.rawWeight,4)}</span></td>
+    <td class="hide-mobile"><span class="number-display" style="color:#64748b;font-size:12px" id="rc-${escAttr(row.id)}">$${fmt(row.rowCost,3)}</span></td>
+    <td>
+      <button onclick="removeFormulaRow('${escAttr(fid)}','${escAttr(row.id)}')"
+        style="background:none;border:none;cursor:pointer;color:#334155;padding:4px;border-radius:4px;display:flex"
+        onmouseover="this.style.color='#f87171'" onmouseout="this.style.color='#334155'">
+        <i data-lucide="x" style="width:14px;height:14px"></i>
+      </button>
+    </td>
+  </tr>`;
+}
+
+function buildRecipeTotals(f, calc) {
+  const bal = calc.totalPurePct;
+  const balStyle = Math.abs(bal-100)<0.01 ? 'color:#10b981' : bal>100 ? 'color:#f87171' : 'color:#fbbf24';
+  const balMsg = Math.abs(bal-100)<0.01
+    ? '<span style="font-size:10px;color:#6ee7b7;margin-left:6px">✓ Balanced</span>'
+    : bal>100
+    ? `<span style="font-size:10px;color:#f87171;margin-left:6px">▲ Over by ${fmt(bal-100,2)}%</span>`
+    : `<span style="font-size:10px;color:#fbbf24;margin-left:6px">▼ ${fmt(100-bal,2)}% remaining</span>`;
+
+  return `<tr style="background:rgba(15,23,42,0.7)">
+    <td colspan="2" style="color:#64748b;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding-top:12px">Total Materials</td>
+    <td style="padding-top:12px">
+      <span class="number-display" style="font-size:14px;font-weight:600;${balStyle}">${fmt(bal,3)}%</span>${balMsg}
+    </td>
+    <td style="padding-top:12px"><span class="number-display" id="total-raw">${fmt(calc.totalRawIngredients,4)}</span></td>
+    <td class="hide-mobile"></td><td></td>
+  </tr>
+  <tr style="background:rgba(15,23,42,0.5)">
+    <td style="color:#475569;font-size:12px;font-style:italic">Solvent / Carrier</td>
+    <td><span class="number-display" style="color:#475569;font-size:12px">100%</span></td>
+    <td><span style="color:#475569;font-size:12px">—</span></td>
+    <td><span class="number-display" style="color:#10b981" id="solvent-weight">${fmt(calc.solventWeight,4)}</span></td>
+    <td class="hide-mobile"><span style="color:#334155;font-size:11px">filler</span></td><td></td>
+  </tr>
+  <tr style="background:rgba(2,6,23,0.4)">
+    <td style="color:#f1f5f9;font-weight:500;font-size:14px;padding-top:12px">Total Batch</td>
+    <td colspan="2"></td>
+    <td style="padding-top:12px"><span class="number-display" style="color:#f1f5f9;font-size:14px;font-weight:600">${fmt(parseFloat(f.targetBatchWeight)||0,3)} g</span></td>
+    <td class="hide-mobile" style="padding-top:12px"><span class="number-display" style="color:#10b981;font-size:12px" id="total-cost-row">$${fmt(calc.totalCost,2)}</span></td><td></td>
+  </tr>`;
+}
+
+function buildEditorSidebar(f) {
+  const calc = calcFormula(f);
+  const fp = getFingerprint(f);
+  const fpEntries = Object.entries(fp).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const fpMax = fpEntries.length ? Math.max(...fpEntries.map(e=>e[1])) : 1;
+
+  const pyramidLevels = ['Top','High','Middle','Bottom','Base'];
+  const pyramidData = {};
+  pyramidLevels.forEach(l => pyramidData[l]=0);
+  f.rows.forEach(row => {
+    const mat = state.materials.find(m=>m.name===row.materialName);
+    const level = mat ? mat.pyramid : null;
+    if (level && pyramidData[level]!==undefined) pyramidData[level] += parseFloat(row.purePct)||0;
+  });
+  const pyrMax = Math.max(...Object.values(pyramidData), 0.001);
+
+  return `<div style="padding:16px 18px;display:flex;flex-direction:column;gap:18px">
+    ${f.notes ? `<div>
+      <div class="section-header" style="margin-bottom:8px">Formula Notes</div>
+      <div class="glass" style="padding:10px 12px;border-radius:8px;color:#64748b;font-size:12px;line-height:1.6;font-style:italic">"${esc(f.notes)}"</div>
+    </div>` : ''}
+
+    <div>
+      <div class="section-header" style="margin-bottom:10px">Fragrance Pyramid</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        ${pyramidLevels.map(lvl => `<div style="display:flex;align-items:center;gap:8px">
+          <span style="color:#475569;font-size:11px;width:44px;flex-shrink:0">${esc(lvl)}</span>
+          <div style="flex:1;height:7px;background:rgba(51,65,85,0.4);border-radius:4px;overflow:hidden">
+            <div style="height:100%;border-radius:4px;background:#475569;width:${Math.round(pyramidData[lvl]/pyrMax*100)}%;transition:width 0.3s"></div>
+          </div>
+          <span class="number-display" style="font-size:11px;width:32px;text-align:right">${fmt(pyramidData[lvl],0)}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div>
+      <div class="section-header" style="margin-bottom:10px">Fingerprint</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${fpEntries.length ? fpEntries.map(([k,v]) => `<div style="display:flex;align-items:center;gap:8px">
+          <span style="color:#475569;font-size:11px;width:52px;flex-shrink:0">${esc(k)}</span>
+          <div style="flex:1;height:6px;background:rgba(51,65,85,0.4);border-radius:3px;overflow:hidden">
+            <div style="height:100%;border-radius:3px;background:${FP_COLORS[k]||'#64748b'};width:${Math.round(v/fpMax*100)}%;transition:width 0.3s"></div>
+          </div>
+          <span class="number-display" style="font-size:11px;width:36px;text-align:right">${fmt(v,1)}%</span>
+        </div>`).join('') : `<p style="color:#334155;font-size:11px">Add materials to see fingerprint.</p>`}
+      </div>
+    </div>
+
+    <div>
+      <div class="section-header" style="margin-bottom:10px">Summary</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+        ${[
+          ['Ingredients', f.rows.length],
+          ['Batch weight', fmt(parseFloat(f.targetBatchWeight)||0,3) + ' g'],
+          ['Concentration', f.targetConcentration + '%'],
+          ['Oil needed', fmt(calc.totalOilNeeded,4) + ' g'],
+          ['Solvent needed', fmt(calc.solventWeight,4) + ' g'],
+        ].map(([k,v]) => `<div style="display:flex;justify-content:space-between">
+          <span style="color:#64748b">${esc(String(k))}</span>
+          <span class="number-display" style="font-size:11px">${esc(String(v))}</span>
+        </div>`).join('')}
+        <div style="display:flex;justify-content:space-between;padding-top:6px;border-top:1px solid rgba(51,65,85,0.3);margin-top:4px">
+          <span style="color:#64748b">Est. total cost</span>
+          <span class="number-display" style="font-size:12px;color:#10b981">$${fmt(calc.totalCost,2)}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:#64748b">Cost per gram</span>
+          <span class="number-display" style="font-size:11px;color:#64748b">$${fmt(calc.totalCost/Math.max(parseFloat(f.targetBatchWeight)||0.001,0.001),3)}/g</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── Partial re-renders for editor (fast path) ────────────────────────────────
+function refreshEditorCalc(fid) {
+  const f = state.formulas.find(f => f.id === fid);
+  if (!f) return;
+  const calc = calcFormula(f);
+
+  // Update each row's raw weight and row cost spans
+  calc.rows.forEach(row => {
+    const rwEl = document.getElementById('rw-' + row.id);
+    if (rwEl) rwEl.textContent = fmt(row.rawWeight, 4);
+    const rcEl = document.getElementById('rc-' + row.id);
+    if (rcEl) rcEl.textContent = '$' + fmt(row.rowCost, 3);
+  });
+
+  // Update tfoot totals
+  const tfoot = document.getElementById('recipe-tfoot');
+  if (tfoot) { tfoot.innerHTML = buildRecipeTotals(f, calc); lucide.createIcons(); }
+
+  // Update global stat displays
+  const oilEl = document.getElementById('stat-oil');
+  if (oilEl) oilEl.textContent = fmt(calc.totalOilNeeded, 4);
+  const costEl = document.getElementById('stat-cost');
+  if (costEl) costEl.textContent = '$' + fmt(calc.totalCost, 2);
+
+  // Refresh sidebar
+  refreshEditorSidebar(fid);
+}
+
+function refreshEditorTable(fid) {
+  const f = state.formulas.find(f => f.id === fid);
+  if (!f) return;
+  const calc = calcFormula(f);
+  const tbody = document.getElementById('recipe-tbody');
+  if (tbody) { tbody.innerHTML = calc.rows.map(row => buildRecipeRow(fid, row)).join(''); lucide.createIcons(); }
+  const tfoot = document.getElementById('recipe-tfoot');
+  if (tfoot) { tfoot.innerHTML = buildRecipeTotals(f, calc); lucide.createIcons(); }
+  const oilEl = document.getElementById('stat-oil');
+  if (oilEl) oilEl.textContent = fmt(calc.totalOilNeeded, 4);
+  const costEl = document.getElementById('stat-cost');
+  if (costEl) costEl.textContent = '$' + fmt(calc.totalCost, 2);
+}
+
+function refreshEditorSidebar(fid) {
+  const f = state.formulas.find(f => f.id === fid);
+  if (!f) return;
+  const el = document.getElementById('editor-sidebar');
+  if (el) { el.innerHTML = buildEditorSidebar(f); lucide.createIcons(); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
